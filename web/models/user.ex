@@ -6,11 +6,13 @@ defmodule HandimanApi.User do
     field :name, :string
     field :encrypted_password, :string
     field :authentication_token, :string
+    field :password, :string, virtual: true
+    field :password_confirmation, :string, virtual: true
 
     timestamps
   end
 
-  @required_fields ~w(email name encrypted_password authentication_token)
+  @required_fields ~w(email name password password_confirmation)
   @optional_fields ~w()
 
   @doc """
@@ -22,5 +24,25 @@ defmodule HandimanApi.User do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+    |> validate_unique(:email, on: HandimanApi.Repo, downcase: true)
+    |> validate_length(:name, min: 1)
+    |> validate_length(:password, min: 1)
+    |> validate_length(:password_confirmation, min: 1)
+    |> validate_confirmation(:password)
+  end
+
+  import Ecto.Changeset, only: [put_change: 3]
+
+  @doc """
+  Creates the user in the database with the password encrypted.
+  """
+  def create(changeset) do
+    changeset
+    |> put_change(:encrypted_password, hashed_password(changeset.params["password"]))
+    |> HandimanApi.Repo.insert!
+  end
+
+  defp hashed_password(password) do
+    Comeonin.Bcrypt.hashpwsalt(password)
   end
 end

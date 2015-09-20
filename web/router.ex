@@ -19,6 +19,12 @@ defmodule HandimanApi.Router do
     resources "/users", UserController, except: [:new, :edit]
   end
 
+  scope "/api", HandimanApi do
+    pipe_through :api
+
+    resources "/registration", RegistrationController, only: [:create]
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", HandimanApi do
   #   pipe_through :api
