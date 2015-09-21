@@ -24,7 +24,7 @@ defmodule HandimanApi.User do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
-    |> validate_unique(:email, on: HandimanApi.Repo, downcase: true)
+    |> unique_constraint(:email, on: HandimanApi.Repo, downcase: true)
     |> validate_length(:name, min: 1)
     |> validate_length(:password, min: 1)
     |> validate_length(:password_confirmation, min: 1)

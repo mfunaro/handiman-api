@@ -2,7 +2,8 @@ defmodule HandimanApi.UserControllerTest do
   use HandimanApi.ConnCase
 
   alias HandimanApi.User
-  @valid_attrs %{authentication_token: "some content", email: "some content", encypted_password: "some content", name: "some content"}
+  @valid_attrs %{email: "some content", name: "some content", password: "password", password_confirmation: "password"}
+  @query_attrs %{email: "some content", name: "some content"}
   @invalid_attrs %{}
 
   setup do
@@ -18,10 +19,9 @@ defmodule HandimanApi.UserControllerTest do
   test "shows chosen resource", %{conn: conn} do
     user = Repo.insert! %User{}
     conn = get conn, user_path(conn, :show, user)
-    assert json_response(conn, 200)["data"] == %{"id" => user.id,
+    assert json_response(conn, 200)["data"] == %{
       "email" => user.email,
       "name" => user.name,
-      "encypted_password" => user.encypted_password,
       "authentication_token" => user.authentication_token}
   end
 
@@ -33,8 +33,8 @@ defmodule HandimanApi.UserControllerTest do
 
   test "creates and renders resource when data is valid", %{conn: conn} do
     conn = post conn, user_path(conn, :create), user: @valid_attrs
-    assert json_response(conn, 201)["data"]["id"]
-    assert Repo.get_by(User, @valid_attrs)
+    assert json_response(conn, 201)["data"]["email"]
+    assert Repo.get_by(User, @query_attrs)
   end
 
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
@@ -45,8 +45,8 @@ defmodule HandimanApi.UserControllerTest do
   test "updates and renders chosen resource when data is valid", %{conn: conn} do
     user = Repo.insert! %User{}
     conn = put conn, user_path(conn, :update, user), user: @valid_attrs
-    assert json_response(conn, 200)["data"]["id"]
-    assert Repo.get_by(User, @valid_attrs)
+    assert json_response(conn, 200)["data"]["email"]
+    assert Repo.get_by(User, @query_attrs)
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
