@@ -23,6 +23,7 @@ defmodule HandimanApi.Router do
     pipe_through :api
 
     resources "/registration", RegistrationController, only: [:create]
+    resources "/login", SessionController, only: [:create]
   end
 
   # Other scopes may use custom stacks.

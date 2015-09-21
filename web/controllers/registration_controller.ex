@@ -4,9 +4,9 @@ defmodule HandimanApi.RegistrationController do
 
   def create(conn, %{"user" => user_params}) do
     changeset = User.changeset(%User{}, user_params)
-    IO.inspect changeset
     if changeset.valid? do
       user = User.create(changeset)
+      {:ok, user} = User.update_token(user, conn)
       conn
         |> render(HandimanApi.UserView, "show.json", user: user)
     else

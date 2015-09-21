@@ -10,10 +10,8 @@ defmodule HandimanApi.UserView do
   end
 
   def render("user.json", %{user: user}) do
-    %{id: user.id,
-      email: user.email,
+    %{email: user.email,
       name: user.name,
-      encrypted_password: user.encrypted_password,
       authentication_token: user.authentication_token}
   end
 end
