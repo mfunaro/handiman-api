@@ -35,6 +35,7 @@ defmodule HandimanApi.Mixfile do
      {:phoenix_html, "~> 2.0"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:cowboy, "~> 1.0"},
-     {:comeonin, "~> 1.1.3"}]
+     {:comeonin, "~> 1.1.3"},
+   {:guardian, "~> 0.6.2"}``]
   end
 end

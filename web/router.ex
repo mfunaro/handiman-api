@@ -13,8 +13,13 @@ defmodule HandimanApi.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug HandimanApi.Plugs.Auth
+  end
+
   scope "/api", HandimanApi do
     pipe_through :api
+    pipe_through :auth
 
     resources "/users", UserController, except: [:new, :edit]
   end
@@ -26,9 +31,4 @@ defmodule HandimanApi.Router do
     resources "/login", SessionController, only: [:create]
     delete "/logout", SessionController, :delete
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", HandimanApi do
-  #   pipe_through :api
-  # end
 end
