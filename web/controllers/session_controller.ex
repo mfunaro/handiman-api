@@ -5,9 +5,11 @@ defmodule HandimanApi.SessionController do
     case HandimanApi.Session.login(session_params, conn) do
       {:ok, user} ->
         conn
+          |> put_status(:created)
           |> render(HandimanApi.UserView, "show.json", user: user)
       {:error, error_map} ->
         conn
+          |> put_status(:unprocessable_entity)
           |> render(HandimanApi.ChangesetView, "error.json", changeset: error_map)
     end
   end

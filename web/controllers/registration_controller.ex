@@ -8,9 +8,11 @@ defmodule HandimanApi.RegistrationController do
       user = User.create(changeset)
       {:ok, user} = User.update_token(user, conn)
       conn
+        |> put_status(:created)
         |> render(HandimanApi.UserView, "show.json", user: user)
     else
       conn
+        |> put_status(:unprocessable_entity)
         |> render(HandimanApi.ChangesetView, "error.json", changeset: changeset)
     end
   end
