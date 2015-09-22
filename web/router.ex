@@ -24,6 +24,7 @@ defmodule HandimanApi.Router do
 
     resources "/registration", RegistrationController, only: [:create]
     resources "/login", SessionController, only: [:create]
+    delete "/logout", SessionController, :delete
   end
 
   # Other scopes may use custom stacks.

@@ -14,10 +14,20 @@ defmodule HandimanApi.SessionController do
     end
   end
 
-  def delete(conn, _) do
-    conn
-    |> delete_session(:current_user)
-    |> put_flash(:info, "Logged out")
-    |> redirect(to: "/")
+  def delete(conn, %{"session" => session_params}) do
+    user = Repo.get_by(HandimanApi.User, %{email: session_params["email"]})
+    user = %{user | authentication_token: ""}
+
+    case HandimanApi.Repo.update(user) do
+      {:ok, user} ->
+        conn
+          |> put_status(:ok)
+          |> render(HandimanApi.UserView, "show.json", user: user)
+        render(conn, "show.json", user: user)
+      {:error, changeset} ->
+        conn
+          |> put_status(:unprocessable_entity)
+          |> render(HandimanApi.ChangesetView, "error.json", changeset: %{message: "error logging out"})
+    end
   end
 end
