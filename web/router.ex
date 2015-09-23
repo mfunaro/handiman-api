@@ -14,7 +14,8 @@ defmodule HandimanApi.Router do
   end
 
   pipeline :auth do
-    plug HandimanApi.Plugs.Auth
+    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+    plug Guardian.Plug.LoadResource
   end
 
   scope "/api", HandimanApi do
@@ -22,13 +23,13 @@ defmodule HandimanApi.Router do
     pipe_through :auth
 
     resources "/users", UserController, except: [:new, :edit]
+    delete "/logout", SessionController, :delete
   end
 
   scope "/api", HandimanApi do
     pipe_through :api
 
-    resources "/registration", RegistrationController, only: [:create]
-    resources "/login", SessionController, only: [:create]
-    delete "/logout", SessionController, :delete
+    post "/registration", RegistrationController, :create
+    post "/login", SessionController, :create
   end
 end

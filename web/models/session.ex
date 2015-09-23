@@ -3,9 +3,9 @@ defmodule HandimanApi.Session do
 
     def login(params, conn) do
       user = HandimanApi.Repo.get_by(User, email: String.downcase(params["email"]))
-      token = Phoenix.Token.sign(conn, "user", user.id)
       case authenticate(user, params["password"]) do
-        true -> User.update_token(user, conn)
+        true ->
+          setup_and_create_token(conn, user)
         _ -> {:error, %{message: "Invalid email or password"}}
       end
     end
@@ -15,5 +15,10 @@ defmodule HandimanApi.Session do
         nil -> false
         _ -> Comeonin.Bcrypt.checkpw(password, user.encrypted_password)
       end
+    end
+
+    defp setup_and_create_token(conn, resource) do
+      conn = Guardian.Plug.set_current_resource(conn, resource)
+      {Guardian.encode_and_sign(resource, :api), conn}
     end
 end

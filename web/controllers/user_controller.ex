@@ -4,6 +4,8 @@ defmodule HandimanApi.UserController do
   alias HandimanApi.User
 
   plug :scrub_params, "user" when action in [:create, :update]
+  plug Guardian.Plug.EnsureAuthenticated, on_failure: { HandimanApi.PageController, :unauthenticated_api }
+
 
   def index(conn, _params) do
     users = Repo.all(User)

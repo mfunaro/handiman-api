@@ -42,11 +42,6 @@ defmodule HandimanApi.User do
     |> HandimanApi.Repo.insert!
   end
 
-  def update_token(user, conn) do
-    token = Phoenix.Token.sign(conn, "user", user.id)
-    user = %{user | authentication_token: token}
-    HandimanApi.Repo.update(user)
-  end
 
   defp hashed_password(password) do
     Comeonin.Bcrypt.hashpwsalt(password)

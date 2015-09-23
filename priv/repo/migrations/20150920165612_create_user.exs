@@ -6,7 +6,7 @@ defmodule HandimanApi.Repo.Migrations.CreateUser do
       add :email, :string
       add :name, :string
       add :encrypted_password, :string
-      add :authentication_token, :string
+      add :authentication_token, :string, size: 300
 
       timestamps
     end
