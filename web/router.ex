@@ -23,11 +23,14 @@ defmodule HandimanApi.Router do
     pipe_through :auth
 
     resources "/users", UserController, except: [:new, :edit]
-    resources "/tees", TeeController, except: [:new, :edit]
     resources "/rounds", RoundController
 
+
+    resources "/courses", CourseController do
+      resources "/tees", TeeController, except: [:new, :edit]
+    end
+
     delete "/logout", SessionController, :delete
-    resources "/courses", CourseController
   end
 
   scope "/api", HandimanApi do

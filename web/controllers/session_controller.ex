@@ -8,7 +8,7 @@ defmodule HandimanApi.SessionController do
         conn
           |> put_resp_header("authorization", jwt)
           |> put_status(:created)
-          |> render(HandimanApi.UserView, "show.json", user: Guardian.Plug.current_resource(conn))
+          |> render(HandimanApi.UserView, "show.json", %{data: Guardian.Plug.current_resource(conn), conn: conn})
       {:error, reason} ->
         conn
           |> put_status(:unauthorized)
@@ -24,7 +24,7 @@ defmodule HandimanApi.SessionController do
           :ok ->
             conn
               |> put_status(:ok)
-              |> render(HandimanApi.UserView, "show.json", user: user)
+              |> render(HandimanApi.UserView, "show.json", %{data: user, conn: conn})
           {:error, reason} ->
             conn
               |> put_status(:unprocessable_entity)

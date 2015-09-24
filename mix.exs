@@ -36,6 +36,7 @@ defmodule HandimanApi.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:cowboy, "~> 1.0"},
      {:comeonin, "~> 1.1.3"},
-     {:guardian, "~> 0.6.2"}]
+     {:guardian, "~> 0.6.2"},
+     {:jsonapi, git: "https://github.com/jeregrine/jsonapi.git"}]
   end
 end

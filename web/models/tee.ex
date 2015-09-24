@@ -11,8 +11,9 @@ defmodule HandimanApi.Tee do
     field :back_nine_slope_rating, :integer
     field :bogey_rating, :float
     field :gender, :string
-    field :course_id, :integer
 
+    belongs_to :course, HandimanApi.Course
+    has_many :rounds, HandimanApi.Round
     timestamps
   end
 
@@ -29,4 +30,8 @@ defmodule HandimanApi.Tee do
     model
     |> cast(params, @required_fields, @optional_fields)
   end
+
+  def with_course_and_rounds(query) do
+   from q in query, preload: [:course, :rounds]
+ end
 end

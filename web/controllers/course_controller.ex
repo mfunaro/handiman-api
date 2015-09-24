@@ -7,7 +7,7 @@ defmodule HandimanApi.CourseController do
 
   def index(conn, _params) do
     courses = Repo.all(Course)
-    render(conn, "index.json", courses: courses)
+    render(conn, "index.json", %{data: courses, conn: conn})
   end
 
   def create(conn, %{"course" => course_params}) do
@@ -18,7 +18,7 @@ defmodule HandimanApi.CourseController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", course_path(conn, :show, course))
-        |> render("show.json", course: course)
+        |> render("show.json", %{data: course, conn: conn})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -28,7 +28,7 @@ defmodule HandimanApi.CourseController do
 
   def show(conn, %{"id" => id}) do
     course = Repo.get!(Course, id)
-    render conn, "show.json", course: course
+    render conn, "show.json", %{data: course, conn: conn}
   end
 
   def update(conn, %{"id" => id, "course" => course_params}) do
@@ -37,7 +37,7 @@ defmodule HandimanApi.CourseController do
 
     case Repo.update(changeset) do
       {:ok, course} ->
-        render(conn, "show.json", course: course)
+        render(conn, "show.json", %{data: course, conn: conn})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

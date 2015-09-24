@@ -1,18 +1,18 @@
 defmodule HandimanApi.CourseView do
   use HandimanApi.Web, :view
+  use JSONAPI.PhoenixView
 
-  def render("index.json", %{courses: courses}) do
-    %{data: render_many(courses, HandimanApi.CourseView, "course.json")}
+  def type, do: "course"
+
+  def attributes(model) do
+    Map.take(model, [:id, :name, :city, :state])
   end
 
-  def render("show.json", %{course: course}) do
-    %{data: render_one(course, HandimanApi.CourseView, "course.json")}
+  def relationships() do
+    %{}
   end
 
-  def render("course.json", %{course: course}) do
-    %{id: course.id,
-      name: course.name,
-      city: course.city,
-      state: course.state}
+  def url_func() do
+    &user_url/3
   end
 end

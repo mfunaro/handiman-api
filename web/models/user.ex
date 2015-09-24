@@ -9,6 +9,7 @@ defmodule HandimanApi.User do
     field :password, :string, virtual: true
     field :password_confirmation, :string, virtual: true
 
+    has_many :rounds, HandimanApi.Round
     timestamps
   end
 
@@ -40,6 +41,10 @@ defmodule HandimanApi.User do
     changeset
     |> put_change(:encrypted_password, hashed_password(changeset.params["password"]))
     |> HandimanApi.Repo.insert!
+  end
+
+  def with_rounds(query) do 
+    from q in query, preload: [:rounds]
   end
 
 

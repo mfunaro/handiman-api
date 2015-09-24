@@ -4,10 +4,10 @@ defmodule HandimanApi.Round do
   schema "rounds" do
     field :score, :integer
     field :holes, :integer
-    field :user_id, :integer
-    field :tee_id, :integer
     field :differential, :float
 
+    belongs_to :user, HandimanApi.User
+    belongs_to :tee, HandimanApi.Tee
     timestamps
   end
 
@@ -23,5 +23,9 @@ defmodule HandimanApi.Round do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+  end
+
+  def with_user_and_tee(query) do
+    from q in query, preload: [:tee, :user]
   end
 end

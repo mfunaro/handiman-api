@@ -2,10 +2,11 @@ defmodule HandimanApi.Session do
     alias HandimanApi.User
 
     def login(params, conn) do
-      user = HandimanApi.Repo.get_by(User, email: String.downcase(params["email"]))
+      user = User
+        |> User.with_rounds
+        |> HandimanApi.Repo.get_by(email: String.downcase(params["email"]))
       case authenticate(user, params["password"]) do
-        true ->
-          setup_and_create_token(conn, user)
+        true -> setup_and_create_token(conn, user)
         _ -> {:error, %{message: "Invalid email or password"}}
       end
     end

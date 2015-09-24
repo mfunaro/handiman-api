@@ -9,7 +9,7 @@ defmodule HandimanApi.UserController do
 
   def index(conn, _params) do
     users = Repo.all(User)
-    render(conn, "index.json", users: users)
+    render(conn, "index.json", %{data: users, conn: conn})
   end
 
   def create(conn, %{"user" => user_params}) do
@@ -29,8 +29,10 @@ defmodule HandimanApi.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    user = Repo.get!(User, id)
-    render conn, "show.json", user: user
+    user = User
+      |> User.with_rounds
+      |> Repo.get!(id)
+    render conn, "show.json",  %{data: user, conn: conn}
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
@@ -39,7 +41,7 @@ defmodule HandimanApi.UserController do
 
     case Repo.update(changeset) do
       {:ok, user} ->
-        render(conn, "show.json", user: user)
+        render(conn, "show.json", %{data: user, conn: conn})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

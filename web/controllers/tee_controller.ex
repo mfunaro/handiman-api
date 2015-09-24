@@ -2,23 +2,26 @@ defmodule HandimanApi.TeeController do
   use HandimanApi.Web, :controller
 
   alias HandimanApi.Tee
+  alias HandimanApi.Course
+  alias HandimanApi.Repo
 
   plug :scrub_params, "tee" when action in [:create, :update]
 
   def index(conn, _params) do
     tees = Repo.all(Tee)
-    render(conn, "index.json", tees: tees)
+    render(conn, "index.json", %{data: tees, conn: conn})
   end
 
   def create(conn, %{"tee" => tee_params}) do
     changeset = Tee.changeset(%Tee{}, tee_params)
+    course = Repo.get!(Course, tee_params["course_id"])
 
     case Repo.insert(changeset) do
       {:ok, tee} ->
         conn
         |> put_status(:created)
-        |> put_resp_header("location", tee_path(conn, :show, tee))
-        |> render("show.json", tee: tee)
+        |> put_resp_header("location", course_tee_path(conn, :show, tee.course_id, tee))
+        |> render("show.json", %{data: tee, conn: conn})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -27,8 +30,10 @@ defmodule HandimanApi.TeeController do
   end
 
   def show(conn, %{"id" => id}) do
-    tee = Repo.get!(Tee, id)
-    render conn, "show.json", tee: tee
+    tee = Tee
+      |> Tee.with_course_and_rounds
+      |> Repo.get!(id)
+    render conn, "show.json", %{data: tee, conn: conn}
   end
 
   def update(conn, %{"id" => id, "tee" => tee_params}) do
@@ -37,7 +42,7 @@ defmodule HandimanApi.TeeController do
 
     case Repo.update(changeset) do
       {:ok, tee} ->
-        render(conn, "show.json", tee: tee)
+        render(conn, "show.json", %{data: tee, conn: conn})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
