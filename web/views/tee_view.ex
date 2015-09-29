@@ -20,6 +20,7 @@ defmodule HandimanApi.TeeView do
     }
   end
 
+  # TODO nested url helper functions don't work right now in JSONAPI. Need to fix and pull request
   def url_func() do
     &user_url/3
   end

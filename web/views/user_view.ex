@@ -2,10 +2,18 @@ defmodule HandimanApi.UserView do
   use HandimanApi.Web, :view
   use JSONAPI.PhoenixView
 
+  alias HandimanApi.User
+
   def type, do: "user"
 
   def attributes(model) do
-    Map.take(model, [:id, :email, :name])
+    # Calcaulte Handicap everytime we show the model. 
+    Map.merge(model,
+      case User.calculate_handicap(User.round_count(model.id), model.id)  do
+        {:ok, handicap} -> %{handicap: handicap}
+        {:error, message} -> %{handicap: "N/A", error: message}
+      end)
+      |> Map.take([:id, :email, :name, :handicap, :error])
   end
 
   def relationships() do

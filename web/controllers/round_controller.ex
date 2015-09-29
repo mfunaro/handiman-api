@@ -2,6 +2,7 @@ defmodule HandimanApi.RoundController do
   use HandimanApi.Web, :controller
 
   alias HandimanApi.Round
+  alias HandimanApi.Tee
 
   plug :scrub_params, "round" when action in [:create, :update]
 
@@ -10,9 +11,12 @@ defmodule HandimanApi.RoundController do
     render(conn, "index.json", %{data: rounds, conn: conn})
   end
 
-  def create(conn, %{"round" => round_params}) do
-    changeset = Round.changeset(%Round{}, round_params)
-
+  def create(conn, %{"round" => round_params, "user" => user_id}) do
+    changeset = Round.changeset(%Round{}, round_params) # Check if the round_params are valid
+    tee = Repo.get!(Tee, round_params["tee_id"])
+    diff = Round.calc_differential(round_params["score"], tee.course_rating, tee.slope_rating)
+      |> Float.round(2)
+    changeset = Round.changeset(%Round{}, Map.merge(round_params, %{"user_id"=> user_id, "differential"=> diff}))
     case Repo.insert(changeset) do
       {:ok, round} ->
         conn
