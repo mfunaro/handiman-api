@@ -1,6 +1,5 @@
 defmodule HandimanApi.SessionController do
   use HandimanApi.Web, :controller
-  require IEx
 
   def create(conn, %{"session" => session_params}) do
     case HandimanApi.Session.login(session_params, conn) do
@@ -17,6 +16,7 @@ defmodule HandimanApi.SessionController do
   end
 
   def delete(conn, %{"session" => session_params}) do
+    IO.inspect session_params
     user = Repo.get_by(HandimanApi.User, %{email: session_params["email"]})
     case Guardian.Plug.claims(conn) do
       {:ok, claims} ->
@@ -30,10 +30,10 @@ defmodule HandimanApi.SessionController do
               |> put_status(:unprocessable_entity)
               |> render(HandimanApi.ChangesetView, "error.json", changeset: %{message: reason})
         end
-      {:error, :unauthorized} ->
+      {:error, message} ->
         conn
           |> put_status(:unauthorized)
-          |> render(HandimanApi.ChangesetView, "error.json", changeset: %{message: :unauthorized})
+          |> render(HandimanApi.ChangesetView, "error.json", changeset: %{message: message})
     end
   end
 end

@@ -3,16 +3,18 @@ defmodule HandimanApi.UserController do
 
   alias HandimanApi.User
 
-  plug :scrub_params, "user" when action in [:create, :update]
-  plug Guardian.Plug.EnsureAuthenticated, on_failure: { HandimanApi.PageController, :unauthenticated_api }
+  plug :scrub_params, "data" when action in [:create, :update]
+  # plug Guardian.Plug.EnsureAuthenticated, on_failure: { HandimanApi.PageController, :unauthenticated_api }
 
 
   def index(conn, _params) do
-    users = Repo.all(User)
+    users = User
+              |> User.with_rounds
+              |> Repo.all
     render(conn, "index.json", %{data: users, conn: conn})
   end
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, %{"data" => %{ "attributes" => user_params}}) do
     changeset = User.changeset(%User{}, user_params)
 
     case Repo.insert(changeset) do
@@ -20,7 +22,7 @@ defmodule HandimanApi.UserController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", user_path(conn, :show, user))
-        |> render("show.json", user: user)
+        |> render("show.json", %{data: user, conn: conn})
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

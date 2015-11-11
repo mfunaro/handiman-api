@@ -35,5 +35,6 @@ defmodule HandimanApi.Endpoint do
     key: "_handiman_api_key",
     signing_salt: "AQ1j1IRC"
 
+  plug PlugCors
   plug HandimanApi.Router
 end

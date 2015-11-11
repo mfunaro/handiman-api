@@ -21,7 +21,7 @@ defmodule HandimanApi.RoundController do
       {:ok, round} ->
         conn
         |> put_status(:created)
-        |> put_resp_header("location", round_path(conn, :show, round))
+        |> put_resp_header("location", user_round_path(conn, :show, round))
         |> render("show.json", %{data: round, conn: conn})
       {:error, changeset} ->
         conn

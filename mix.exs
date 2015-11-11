@@ -37,6 +37,7 @@ defmodule HandimanApi.Mixfile do
      {:cowboy, "~> 1.0"},
      {:comeonin, "~> 1.1.3"},
      {:guardian, "~> 0.6.2"},
-     {:jsonapi, git: "https://github.com/jeregrine/jsonapi.git"}]
+     {:jsonapi, git: "https://github.com/jeregrine/jsonapi.git"},
+     {:plug_cors, "~> 0.7"},]
   end
 end

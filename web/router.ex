@@ -11,6 +11,7 @@ defmodule HandimanApi.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug PlugCors, [origins: ["localhost:4200"]]
   end
 
   pipeline :auth do
@@ -20,11 +21,10 @@ defmodule HandimanApi.Router do
 
   scope "/api", HandimanApi do
     pipe_through :api
-    pipe_through :auth
 
-    resources "/users", UserController, except: [:new, :edit]
-    resources "/rounds", RoundController
-
+    resources "/users", UserController, except: [:new, :edit] do
+        resources "/rounds", RoundController
+    end
 
     resources "/courses", CourseController do
       resources "/tees", TeeController, except: [:new, :edit]
