@@ -9,7 +9,11 @@ defmodule HandimanApi.CourseView do
   end
 
   def relationships() do
-    %{}
+    %{
+      tee: %{
+        view: HandimanApi.TeeView
+      }
+    }
   end
 
   def url_func() do

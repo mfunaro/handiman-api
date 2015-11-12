@@ -59,7 +59,7 @@ defmodule HandimanApi.User do
   def create(changeset) do
     changeset
     |> put_change(:encrypted_password, hashed_password(changeset.params["password"]))
-    |> HandimanApi.Repo.insert!
+    |> HandimanApi.Repo.insert
   end
 
   def with_rounds(query) do

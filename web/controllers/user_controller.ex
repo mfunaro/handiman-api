@@ -8,16 +8,14 @@ defmodule HandimanApi.UserController do
 
 
   def index(conn, _params) do
-    users = User
-              |> User.with_rounds
-              |> Repo.all
+    users = User |> User.with_rounds |> Repo.all
     render(conn, "index.json", %{data: users, conn: conn})
   end
 
   def create(conn, %{"data" => %{ "attributes" => user_params}}) do
     changeset = User.changeset(%User{}, user_params)
 
-    case Repo.insert(changeset) do
+    case User.create(changeset) do
       {:ok, user} ->
         conn
         |> put_status(:created)
@@ -31,13 +29,11 @@ defmodule HandimanApi.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    user = User
-      |> User.with_rounds
-      |> Repo.get!(id)
+    user = User.with_preloaded_assoc(id)
     render conn, "show.json",  %{data: user, conn: conn}
   end
 
-  def update(conn, %{"id" => id, "user" => user_params}) do
+  def update(conn, %{"id" => id, "data" => %{ "attributes" => user_params}}) do
     user = Repo.get!(User, id)
     changeset = User.changeset(user, user_params)
 
