@@ -6,6 +6,7 @@ defmodule HandimanApi.SessionController do
       {{:ok, jwt, full_claims}, conn} ->
         conn
           |> put_resp_header("authorization", jwt)
+          |> put_resp_header("access-control-expose-headers", "authorization")
           |> put_status(:created)
           |> render(HandimanApi.UserView, "show.json", %{data: Guardian.Plug.current_resource(conn), conn: conn})
       {:error, reason} ->
