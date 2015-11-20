@@ -33,5 +33,9 @@ defmodule HandimanApi.Tee do
 
   def with_course_and_rounds(query) do
    from q in query, preload: [:course, :rounds]
- end
+  end
+
+  def with_rounds(query) do
+   from q in query, preload: [:rounds]
+  end
 end

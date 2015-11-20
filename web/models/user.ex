@@ -107,7 +107,7 @@ defmodule HandimanApi.User do
             join: r in assoc(u, :rounds),
             join: t in assoc(r, :tee),
             join: c in assoc(t, :course),
-            where: u.id == "#{user_id}", preload: [rounds: {r, tee: {t, course: c}}]
+            where: u.id == "#{user_id}", preload: [rounds: {r, tee: {t, rounds: r, course: c}}]
     HandimanApi.Repo.one(query)
   end
 end

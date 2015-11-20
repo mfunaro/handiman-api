@@ -8,7 +8,7 @@ defmodule HandimanApi.TeeController do
   plug :scrub_params, "tee" when action in [:create, :update]
 
   def index(conn, params) do
-    tees = Repo.all(Tee)
+    tees = Tee |> Tee.with_course_and_rounds |> Repo.all
     render(conn, "index.json", %{data: tees, conn: conn})
   end
 

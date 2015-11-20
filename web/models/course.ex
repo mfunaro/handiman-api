@@ -6,6 +6,7 @@ defmodule HandimanApi.Course do
     field :city, :string
     field :state, :string
 
+    has_many :tees, HandimanApi.Tee
     timestamps
   end
 
@@ -21,5 +22,9 @@ defmodule HandimanApi.Course do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+  end
+
+  def with_tees(query) do
+    from q in query, preload: [:tees]
   end
 end

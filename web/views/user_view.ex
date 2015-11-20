@@ -7,7 +7,7 @@ defmodule HandimanApi.UserView do
   def type, do: "user"
 
   def attributes(model) do
-    # Calcaulte Handicap everytime we show the model. 
+    # Calcaulte Handicap everytime we show the model.
     Map.merge(model,
       case User.calculate_handicap(User.round_count(model.id), model.id)  do
         {:ok, handicap} -> %{handicap: handicap}
