@@ -13,7 +13,8 @@ defmodule HandimanApi.UserView do
         {:ok, handicap} -> %{handicap: handicap}
         {:error, message} -> %{handicap: "N/A", error: message}
       end)
-      |> Map.take([:id, :email, :name, :handicap, :error])
+      |> Map.merge(%{course_count: User.unique_course_count(model.id)})
+      |> Map.take([:id, :email, :name, :handicap, :error, :course_count])
   end
 
   def relationships() do

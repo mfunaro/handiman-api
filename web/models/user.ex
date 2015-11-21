@@ -102,6 +102,18 @@ defmodule HandimanApi.User do
     HandimanApi.Repo.one(query)
   end
 
+  @doc """
+  Get the number of unique courses the user has played.
+  """
+  def unique_course_count(user_id) do
+    query = from u in HandimanApi.User,
+            join: r in assoc(u, :rounds),
+            join: t in assoc(r, :tee),
+            join: c in assoc(t, :course),
+            where: u.id == "#{user_id}", select: count(fragment("DISTINCT ?", c.name))
+    HandimanApi.Repo.one(query)
+  end
+
   def with_preloaded_assoc(user_id) do
     query = from u in HandimanApi.User,
             join: r in assoc(u, :rounds),
