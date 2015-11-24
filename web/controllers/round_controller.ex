@@ -4,24 +4,29 @@ defmodule HandimanApi.RoundController do
   alias HandimanApi.Round
   alias HandimanApi.Tee
 
-  plug :scrub_params, "round" when action in [:create, :update]
+  plug :scrub_params, "data" when action in [:create, :update]
 
   def index(conn, _params) do
     rounds = Repo.all(Round)
     render(conn, "index.json", %{data: rounds, conn: conn})
   end
 
-  def create(conn, %{"round" => round_params, "user" => user_id}) do
+  def create(conn, %{"data" => data}) do
+    round_params = data["attributes"]
+    user_id = data["relationships"]["user"]["data"]["id"]
+    tee_id = data["relationships"]["tee"]["data"]["id"]
+    IO.inspect(tee_id)
     changeset = Round.changeset(%Round{}, round_params) # Check if the round_params are valid
-    tee = Repo.get!(Tee, round_params["tee_id"])
+    tee = Repo.get!(Tee, tee_id)
+    IO.inspect(tee)
     diff = Round.calc_differential(round_params["score"], tee.course_rating, tee.slope_rating)
       |> Float.round(2)
-    changeset = Round.changeset(%Round{}, Map.merge(round_params, %{"user_id"=> user_id, "differential"=> diff}))
+    changeset = Round.changeset(%Round{}, Map.merge(round_params, %{"user_id"=> user_id, "differential"=> diff, "tee_id" => tee.id}))
     case Repo.insert(changeset) do
       {:ok, round} ->
         conn
         |> put_status(:created)
-        |> put_resp_header("location", user_round_path(conn, :show, round))
+        # |> put_resp_header("location", user_round_path(conn, :show, round))
         |> render("show.json", %{data: round, conn: conn})
       {:error, changeset} ->
         conn

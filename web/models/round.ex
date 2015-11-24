@@ -43,7 +43,7 @@ defmodule HandimanApi.Round do
   Calculate the differential for a round
   """
   def calc_differential(score, course_rating, slope_rating) do
-    {float_score, _} = Float.parse(score)
-    (float_score - course_rating) * 113 / slope_rating
+
+    (score - course_rating) * 113 / slope_rating
   end
 end
